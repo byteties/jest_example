@@ -2,7 +2,31 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+const styleName = [
+  'almond',
+  'cha-thai',
+  'charcoal',
+  'cloudy', 
+  'hybrid',
+  'lightsteel',
+  'midnight',
+  'satellite',
+  'spearmint',
+  'terrain', 
+  'ivory', 
+]
+
+const timerID = []
 class App extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      map: null,
+      count: 0
+    }
+    this.initMap = this.initMap.bind(this)
+  }
+
   componentDidMount() {
     this.initMap()
   }
@@ -14,6 +38,30 @@ class App extends Component {
       app_id: 'cleanfood-map-6vpir',
       api_key: 'NmQ4MmUzNDU0NDJjZjc3N2U0NzU0OWE5MjYwYjhiMWE',
     })
+
+    map.on('dblclick', () => {
+      if (timerID.length) {
+        timerID.forEach((e) => {
+          clearTimeout(e)
+        })
+      }
+    })
+    map.on('click', () => {
+      const { count } = this.state
+      timerID.push(setTimeout(() => {
+        if(count < 10){
+          map.setStyle(styleName[count])
+          this.setState({
+            count: count +1
+          })
+        } else {
+          map.setStyle(styleName[count])
+          this.setState({
+            count: 0
+          })
+        }
+      }, 200))
+    })    
   } 
 
   render() {
